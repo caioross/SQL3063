@@ -78,11 +78,93 @@ RIGHT JOIN Alunos a ON a.id = m.AlunoId
 
 ORDER BY c.NomeCurso;
 
-/*
 
-criar 3 tabelas:
-professores: id / nome / email
-notas: id / alunoid / cursoid / data avaliacao
-pagamentos: id / alunoid / valor / datapagamento / status
+---- Bloco dos Profis
+DROP TABLE IF EXISTS Professores;
+CREATE TABLE Professores(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	Nome NVARCHAR(100) NOT NULL,
+	Email NVARCHAR(100)
+);
 
-*/
+INSERT INTO Professores (Nome, Email) 
+VALUES
+	('Caio Ross', 'kio199@gmail.com'),
+	('Sibeli Power', 'Sibeli@ig.com'),
+	('Genilson', 'genilson@hotmail.com');
+
+SELECT * FROM Professores;
+
+----- bloco nas notas
+DROP TABLE IF EXISTS Notas;
+CREATE TABLE Notas(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	AlunoId INT NOT NULL,
+	CursoId INT NOT NULL,
+	Nota INT NOT NULL,
+	DataAvaliacao DATE NOT NULL
+
+	FOREIGN KEY (AlunoId) REFERENCES Alunos(id),
+	FOREIGN KEY (CursoId) REFERENCES Cursos(id)
+);
+
+INSERT INTO Notas (AlunoId, CursoId, Nota, DataAvaliacao)
+VALUES 
+	(1,1,8,'2024-04-12'),
+	(8,2,7,'2024-05-11'),
+	(9,3,6,'2024-06-16'),
+	(10,4,5,'2024-07-02'),
+	(11,3,4,'2024-08-02');
+
+SELECT * FROM Notas;
+
+------- Bloco de Pagamentos
+DROP TABLE IF EXISTS Pagamentos
+CREATE TABLE Pagamentos(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	AlunoId INT NOT NULL,
+	Valor INT NOT NULL,
+	DataPagamento DATE NOT NULL,
+	Situacao NVARCHAR(10) NOT NULL,
+
+	FOREIGN KEY (AlunoId) REFERENCES Alunos(id)
+);
+INSERT INTO Pagamentos (AlunoId, Valor, DataPagamento, Situacao)
+VALUES 
+	(1, 300, '2022-09-01', 'Pago'),
+	(8, 300, '2022-09-02', 'Atrasado'),
+	(9, 500, '2022-09-01', 'Pendente'),
+	(10, 300, '2025-06-01', 'Pago'),
+	(11, 400, '2023-08-01', 'Atrasado'),
+	(12, 500, '2024-10-01', 'Pendente');
+
+--- Mostrar notas dos alunos em cada curso
+SELECT 
+	a.Nome AS Aluno,
+	c.NomeCurso AS Curso,
+	n.Nota,
+	n.DataAvaliacao AS Data
+FROM Notas n
+
+INNER JOIN Alunos a ON a.id = n.AlunoId
+INNER JOIN Cursos c ON c.id = n.CursoId
+
+ORDER BY n.DataAvaliacao DESC
+
+--- Média de notas por curso
+SELECT c.NomeCurso, AVG(n.Nota) AS 'Media Notas'
+FROM Notas n
+INNER JOIN Cursos c ON c.id = n.CursoId
+GROUP BY c.NomeCurso
+ORDER BY 'Media Notas' DESC;
+
+--- mostrar situação de pagamento por aluno
+SELECT a.Nome, p.Valor, p.DataPagamento, p.Situacao
+FROM Pagamentos p
+INNER JOIN Alunos a ON a.id = p.AlunoId
+ORDER BY p.DataPagamento DESC;
+
+--- quantidade de alunos por situação de pagamento
+SELECT p.Situacao, COUNT(*) AS Quantidade
+FROM Pagamentos p
+GROUP BY p.Situacao
