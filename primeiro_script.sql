@@ -1,12 +1,12 @@
--- Isso Ã© um comentario de uma linha!
+-- Isso é um comentario de uma linha!
 
--- CriaÃ§Ã£o do banco de dados chamado escola
+-- Criação do banco de dados chamado escola
 CREATE DATABASE TM_Escola;
 
 -- selecionar o banco de dados Escola para usar 
--- nas proximas instruÃ§Ãµes
+-- nas proximas instruções
 USE TM_Escola;
--- eu atualizei aqui
+
 -- criaremos a tabela chamada alunos
 CREATE TABLE Alunos (
 	id INT PRIMARY KEY IDENTITY(1,1),
@@ -15,7 +15,6 @@ CREATE TABLE Alunos (
 	Email NVARCHAR(100),
 	DataMatricula DATE NOT NULL
 );
-
 
 
 
